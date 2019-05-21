@@ -1,6 +1,8 @@
 package com.vehicles.project;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -25,8 +27,7 @@ public class Main
 
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("Diga'm la matrícula del cotxe");
-        plate = sc.nextLine();
+        plate = checkPlate(sc);
         System.out.println("Diga'm la marca");
         brand = sc.nextLine();
         System.out.println("Diga'm el color");
@@ -65,7 +66,7 @@ public class Main
                 + " diametre: " + newCar.getWheels().get(3).getDiameter());
     }
 
-    private static double checkDiameter(String wheelPosition, Scanner sc)
+    private static double checkDiameter(String wheelPosition, Scanner sc) throws Exception
     {
         boolean diamIsCorrect = false;
         double diameter = 0;
@@ -77,17 +78,98 @@ public class Main
                 System.out.println("Diga'm el diàmetre de les rodes "
                         + wheelPosition);
                 diameter = sc.nextDouble();
-                diamIsCorrect = true;
-            } catch (Exception e)
+
+                if (diameter > 0.4 && diameter < 4)
+                {
+                    diamIsCorrect = true;
+                } else
+                {
+                    //System.out.println("error");
+                    throw new IOException();
+
+                }
+
+            } catch (IOException e)
             {
                 diamIsCorrect = false;
-                System.out.println("Ha de ser un número");
+                System.out.println("Ha de ser un número, superior a 0.4 i inferior a 4");
+
+            } catch (InputMismatchException e)
+            {
+                diamIsCorrect = false;
+                System.out.println("Ha de ser un número, superior a 0.4 i inferior a 4");
                 sc.next();
             }
+
         }
 
         return diameter;
 
+    }
+
+    private static String checkPlate(Scanner sc) throws Exception
+    {
+        boolean plateIsCorrect = false;
+        String plate = null;
+        int numLetters = 0;
+        int numDigits = 0;
+
+        while (!plateIsCorrect)
+        {
+            try
+            {
+                System.out.println("Diga'm la matrícula del cotxe");
+                plate = sc.nextLine();
+
+                if (plate.length() < 6 || plate.length() > 7)
+                {
+                    throw new IOException();
+                }
+
+                for (int i = 0; i < 4; i++)
+                {
+                    Character c = plate.charAt(i);
+                    if (Character.isDigit(c))
+                    {
+                        numDigits++;
+                    } else
+                    {
+                        throw new IOException();
+                    }
+                }
+
+                if (numDigits < 4)
+                {
+                    throw new IOException();
+                }
+
+                for (int i = 4; i < plate.length(); i++)
+                {
+                    Character c = plate.charAt(i);
+                    if (Character.isLetter(c))
+                    {
+                        numLetters++;
+                    } else
+                    {
+                        throw new IOException();
+                    }
+                }
+
+                if (numLetters < 2 && numLetters > 4)
+                {
+                    throw new IOException();
+                } else
+                {
+                    plateIsCorrect = true;
+                }
+
+            } catch (IOException e)
+            {
+                plateIsCorrect = false;
+                System.out.println("La matrícula han de ser 4 lletres i 2-3 números");
+            }
+        }
+        return plate;
     }
 
     private static List<Wheel> listingWheels(Wheel wheel)
