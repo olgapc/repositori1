@@ -22,48 +22,116 @@ public class Main
         double diameterB;
         String wheelBrandF;
         double diameterF;
-        List<Wheel> frontWheels = new ArrayList<Wheel>();;
-        List<Wheel> backWheels = new ArrayList<Wheel>();;
+        String vehicleType;
+        Car newCar = null;
+        Bike newBike = null;
+        int numListWheels = 0;
+        List<Wheel> frontWheels = new ArrayList<>();
+        List<Wheel> backWheels = new ArrayList<>();
+        Wheel backWheel = null;
+        Wheel frontWheel = null;
 
         Scanner sc = new Scanner(System.in);
 
+        vehicleType = checkVehicle(sc);
         plate = checkPlate(sc);
         System.out.println("Diga'm la marca");
         brand = sc.nextLine();
         System.out.println("Diga'm el color");
         color = sc.nextLine();
 
-        Car newCar = new Car(plate, brand, color);
-
+//        switch (vehicleType)
+//        {
+//            case "cotxe":
+//                newCar = new Car(plate, brand, color);
+//                numListWheels = 2;
+//                break;
+//            case "moto":
+//                newBike = new Bike(plate, brand, color);
+//                numListWheels = 1;
+//                break;
+//        }
         System.out.println("Diga'm la marca de les rodes posteriors");
         wheelBrandB = sc.nextLine();
 
         diameterB = checkDiameter("posteriors", sc);
 
-        Wheel backWheel = new Wheel(wheelBrandB, diameterB);
-        backWheels = listingWheels(backWheel);
+        backWheel = new Wheel(wheelBrandB, diameterB);
 
         System.out.println("Diga'm la marca de les rodes davanteres");
         wheelBrandF = sc.next();
 
         diameterF = checkDiameter("davanteres", sc);
 
-        Wheel frontWheel = new Wheel(wheelBrandF, diameterF);
-        frontWheels = listingWheels(frontWheel);
+        frontWheel = new Wheel(wheelBrandF, diameterF);
 
-        newCar.addWheels(frontWheels, backWheels);
+        switch (vehicleType)
+        {
+            case "cotxe":
+                newCar = new Car(plate, brand, color);
+                backWheels = listingWheels(backWheel, 2);
+                frontWheels = listingWheels(frontWheel, 2);
+                newCar.addWheels(frontWheels, backWheels);
+                System.out.println("marca: " + newCar.getBrand()
+                        + " color: " + newCar.getColor()
+                        + "\n matricula: " + newCar.getPlate()
+                        + "\n roda1 marca: " + newCar.getWheels().get(0).getBrand()
+                        + " diametre: " + newCar.getWheels().get(0).getDiameter()
+                        + "\n roda2 marca: " + newCar.getWheels().get(1).getBrand()
+                        + " diametre: " + newCar.getWheels().get(1).getDiameter()
+                        + "\n roda3 marca: " + newCar.getWheels().get(2).getBrand()
+                        + " diametre: " + newCar.getWheels().get(2).getDiameter()
+                        + "\n roda4 marca: " + newCar.getWheels().get(3).getBrand()
+                        + " diametre: " + newCar.getWheels().get(3).getDiameter());
 
-        System.out.println("marca: " + newCar.getBrand()
-                + " color: " + newCar.getColor()
-                + "\n matricula: " + newCar.getPlate()
-                + "\n roda1 marca: " + newCar.getWheels().get(0).getBrand()
-                + " diametre: " + newCar.getWheels().get(0).getDiameter()
-                + "\n roda2 marca: " + newCar.getWheels().get(1).getBrand()
-                + " diametre: " + newCar.getWheels().get(1).getDiameter()
-                + "\n roda3 marca: " + newCar.getWheels().get(2).getBrand()
-                + " diametre: " + newCar.getWheels().get(2).getDiameter()
-                + "\n roda4 marca: " + newCar.getWheels().get(3).getBrand()
-                + " diametre: " + newCar.getWheels().get(3).getDiameter());
+                break;
+            case "moto":
+                newBike = new Bike(plate, brand, color);
+                backWheels = listingWheels(backWheel, 1);
+                frontWheels = listingWheels(frontWheel, 1);
+                newBike.addWheels(frontWheels, backWheels);
+
+                System.out.println("marca: " + newBike.getBrand()
+                        + " color: " + newBike.getColor()
+                        + "\n matricula: " + newBike.getPlate()
+                        + "\n roda1 marca: " + newBike.getWheels().get(0).getBrand()
+                        + " diametre: " + newBike.getWheels().get(0).getDiameter()
+                        + "\n roda2 marca: " + newBike.getWheels().get(1).getBrand()
+                        + " diametre: " + newBike.getWheels().get(1).getDiameter());
+
+                break;
+        }
+
+    }
+
+    private static String checkVehicle(Scanner sc) throws Exception
+    {
+        boolean vehicleIsCorrect = false;
+        String vehicleType = null;
+        while (!vehicleIsCorrect)
+        {
+            try
+            {
+                System.out.println("Vols crear un cotxe o una moto?");
+                vehicleType = sc.nextLine();
+
+                if (vehicleType.equals("cotxe") || vehicleType.equals("moto"))
+                {
+                    vehicleIsCorrect = true;
+
+                } else
+                {
+                    throw new IOException();
+                }
+
+            } catch (IOException e)
+            {
+                vehicleIsCorrect = false;
+                System.out.println("Has d'escollir entre cotxe o moto");
+            }
+
+        }
+        return vehicleType;
     }
 
     private static double checkDiameter(String wheelPosition, Scanner sc) throws Exception
@@ -92,12 +160,12 @@ public class Main
             } catch (IOException e)
             {
                 diamIsCorrect = false;
-                System.out.println("Ha de ser un número, superior a 0.4 i inferior a 4");
+                System.out.println("Ha de ser un número, superior a 0,4 i inferior a 4");
 
             } catch (InputMismatchException e)
             {
                 diamIsCorrect = false;
-                System.out.println("Ha de ser un número, superior a 0.4 i inferior a 4");
+                System.out.println("Ha de ser un número, superior a 0,4 i inferior a 4");
                 sc.next();
             }
 
@@ -118,7 +186,7 @@ public class Main
         {
             try
             {
-                System.out.println("Diga'm la matrícula del cotxe");
+                System.out.println("Diga'm la matrícula");
                 plate = sc.nextLine();
 
                 if (plate.length() < 6 || plate.length() > 7)
@@ -172,11 +240,15 @@ public class Main
         return plate;
     }
 
-    private static List<Wheel> listingWheels(Wheel wheel)
+    private static List<Wheel> listingWheels(Wheel wheel, int numListWheels)
     {
-        List<Wheel> wheelsList = new ArrayList<Wheel>();
-        wheelsList.add(wheel);
-        wheelsList.add(wheel);
+        List<Wheel> wheelsList = new ArrayList<>();
+        for (int i = 0; i < numListWheels; i++)
+        {
+            wheelsList.add(wheel);
+
+        }
+
         return wheelsList;
     }
 }
