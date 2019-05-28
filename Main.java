@@ -1,10 +1,17 @@
-package com.vehicles.project;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package videosproject;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -13,242 +20,412 @@ import java.util.Scanner;
 public class Main
 {
 
+    /**
+     * @param args the command line arguments
+     * @throws java.lang.Exception
+     */
     public static void main(String[] args) throws Exception
     {
-        String plate;
-        String brand;
-        String color;
-        String wheelBrandB;
-        double diameterB;
-        String wheelBrandF;
-        double diameterF;
-        String vehicleType;
-        Car newCar = null;
-        Bike newBike = null;
-        int numListWheels = 0;
-        List<Wheel> frontWheels = new ArrayList<>();
-        List<Wheel> backWheels = new ArrayList<>();
-        Wheel backWheel = null;
-        Wheel frontWheel = null;
+        List<User> userList = new ArrayList<User>();
 
         Scanner sc = new Scanner(System.in);
-
-        vehicleType = checkVehicle(sc);
-        plate = checkPlate(sc);
-        System.out.println("Diga'm la marca");
-        brand = sc.nextLine();
-        System.out.println("Diga'm el color");
-        color = sc.nextLine();
-
-//        switch (vehicleType)
-//        {
-//            case "cotxe":
-//                newCar = new Car(plate, brand, color);
-//                numListWheels = 2;
-//                break;
-//            case "moto":
-//                newBike = new Bike(plate, brand, color);
-//                numListWheels = 1;
-//                break;
-//        }
-        System.out.println("Diga'm la marca de les rodes posteriors");
-        wheelBrandB = sc.nextLine();
-
-        diameterB = checkDiameter("posteriors", sc);
-
-        backWheel = new Wheel(wheelBrandB, diameterB);
-
-        System.out.println("Diga'm la marca de les rodes davanteres");
-        wheelBrandF = sc.next();
-
-        diameterF = checkDiameter("davanteres", sc);
-
-        frontWheel = new Wheel(wheelBrandF, diameterF);
-
-        switch (vehicleType)
-        {
-            case "cotxe":
-                newCar = new Car(plate, brand, color);
-                backWheels = listingWheels(backWheel, 2);
-                frontWheels = listingWheels(frontWheel, 2);
-                newCar.addWheels(frontWheels, backWheels);
-                System.out.println("marca: " + newCar.getBrand()
-                        + " color: " + newCar.getColor()
-                        + "\n matricula: " + newCar.getPlate()
-                        + "\n roda1 marca: " + newCar.getWheels().get(0).getBrand()
-                        + " diametre: " + newCar.getWheels().get(0).getDiameter()
-                        + "\n roda2 marca: " + newCar.getWheels().get(1).getBrand()
-                        + " diametre: " + newCar.getWheels().get(1).getDiameter()
-                        + "\n roda3 marca: " + newCar.getWheels().get(2).getBrand()
-                        + " diametre: " + newCar.getWheels().get(2).getDiameter()
-                        + "\n roda4 marca: " + newCar.getWheels().get(3).getBrand()
-                        + " diametre: " + newCar.getWheels().get(3).getDiameter());
-
-                break;
-            case "moto":
-                newBike = new Bike(plate, brand, color);
-                backWheels = listingWheels(backWheel, 1);
-                frontWheels = listingWheels(frontWheel, 1);
-                newBike.addWheels(frontWheels, backWheels);
-
-                System.out.println("marca: " + newBike.getBrand()
-                        + " color: " + newBike.getColor()
-                        + "\n matricula: " + newBike.getPlate()
-                        + "\n roda1 marca: " + newBike.getWheels().get(0).getBrand()
-                        + " diametre: " + newBike.getWheels().get(0).getDiameter()
-                        + "\n roda2 marca: " + newBike.getWheels().get(1).getBrand()
-                        + " diametre: " + newBike.getWheels().get(1).getDiameter());
-
-                break;
-        }
+        menu(sc, userList);
 
     }
 
-    private static String checkVehicle(Scanner sc) throws Exception
+    //first menu
+    private static void menu(Scanner sc, List<User> userList) throws Exception
     {
-        boolean vehicleIsCorrect = false;
-        String vehicleType = null;
-        while (!vehicleIsCorrect)
+
+        int option = 0;
+        boolean isCorrect = false;
+
+        do
         {
             try
             {
-                System.out.println("Vols crear un cotxe o una moto?");
-                vehicleType = sc.nextLine();
 
-                if (vehicleType.equals("cotxe") || vehicleType.equals("moto"))
+                System.out.println("Selecciona una de les opcions: "
+                        + "\n 1. Crear usuari"
+                        + "\n 2. Login");
+                option = sc.nextInt();
+                sc.nextLine();
+                if (option > 0 && option < 3)
                 {
-                    vehicleIsCorrect = true;
+                    isCorrect = true;
 
                 } else
                 {
                     throw new IOException();
                 }
-
             } catch (IOException e)
             {
-                vehicleIsCorrect = false;
-                System.out.println("Has d'escollir entre cotxe o moto");
-            }
-
-        }
-        return vehicleType;
-    }
-
-    private static double checkDiameter(String wheelPosition, Scanner sc) throws Exception
-    {
-        boolean diamIsCorrect = false;
-        double diameter = 0;
-
-        while (!diamIsCorrect)
-        {
-            try
-            {
-                System.out.println("Diga'm el diàmetre de les rodes "
-                        + wheelPosition);
-                diameter = sc.nextDouble();
-
-                if (diameter > 0.4 && diameter < 4)
-                {
-                    diamIsCorrect = true;
-                } else
-                {
-                    //System.out.println("error");
-                    throw new IOException();
-
-                }
-
-            } catch (IOException e)
-            {
-                diamIsCorrect = false;
-                System.out.println("Ha de ser un número, superior a 0,4 i inferior a 4");
-
+                isCorrect = false;
+                System.out.println("Aquesta opció no és vàlida");
             } catch (InputMismatchException e)
             {
-                diamIsCorrect = false;
-                System.out.println("Ha de ser un número, superior a 0,4 i inferior a 4");
+                isCorrect = false;
+                System.out.println("Aquesta opció no és vàlida");
                 sc.next();
             }
+        } while (!isCorrect);
+
+        System.out.println("Has triat l'opció: " + option);
+
+        switch (option)
+        {
+            case 1:
+                //Sign in
+                createUser(sc, userList);
+                break;
+            case 2:
+                //Login
+                verifyUser(sc, userList);
+                break;
 
         }
 
-        return diameter;
-
     }
 
-    private static String checkPlate(Scanner sc) throws Exception
+    //menu for login user
+    private static void menu2(Scanner sc, User user) throws Exception
     {
-        boolean plateIsCorrect = false;
-        String plate = null;
-        int numLetters = 0;
-        int numDigits = 0;
 
-        while (!plateIsCorrect)
+        int option = 0;
+        boolean isCorrect = false;
+
+        do
         {
             try
             {
-                System.out.println("Diga'm la matrícula");
-                plate = sc.nextLine();
 
-                if (plate.length() < 6 || plate.length() > 7)
+                System.out.println("Selecciona una de les opcions: "
+                        + "\n 1. Afegir video"
+                        + "\n 2. Veure llistat videos"
+                        + "\n 3. Sortir");
+                option = sc.nextInt();
+                sc.nextLine();
+                if (option > 0 && option < 4)
                 {
-                    throw new IOException();
-                }
+                    isCorrect = true;
 
-                for (int i = 0; i < 4; i++)
-                {
-                    Character c = plate.charAt(i);
-                    if (Character.isDigit(c))
-                    {
-                        numDigits++;
-                    } else
-                    {
-                        throw new IOException();
-                    }
-                }
-
-                if (numDigits < 4)
-                {
-                    throw new IOException();
-                }
-
-                for (int i = 4; i < plate.length(); i++)
-                {
-                    Character c = plate.charAt(i);
-                    if (Character.isLetter(c))
-                    {
-                        numLetters++;
-                    } else
-                    {
-                        throw new IOException();
-                    }
-                }
-
-                if (numLetters < 2 && numLetters > 4)
-                {
-                    throw new IOException();
                 } else
                 {
-                    plateIsCorrect = true;
+                    throw new IOException();
                 }
-
             } catch (IOException e)
             {
-                plateIsCorrect = false;
-                System.out.println("La matrícula han de ser 4 lletres i 2-3 números");
+                isCorrect = false;
+                System.out.println("Aquesta opció no és vàlida");
+            } catch (InputMismatchException e)
+            {
+                isCorrect = false;
+                System.out.println("Aquesta opció no és vàlida");
+                sc.next();
             }
-        }
-        return plate;
-    }
+        } while (!isCorrect);
 
-    private static List<Wheel> listingWheels(Wheel wheel, int numListWheels)
-    {
-        List<Wheel> wheelsList = new ArrayList<>();
-        for (int i = 0; i < numListWheels; i++)
+        System.out.println("Has triat l'opció: " + option);
+
+        switch (option)
         {
-            wheelsList.add(wheel);
+            case 1:
+                //add video
+                Video video = askVideo(sc);
 
+                user.setVideoList(video);
+                System.out.println("Video afegit correctament "
+                        + "\ntítol: " + video.getTitle()
+                        + "\nurl: " + video.getVideoUrl()
+                        + "\netiquetes: " + video.getTags());
+                menu2(sc, user);
+                break;
+            case 2:
+                //list videos
+                int i = 0;
+                for (Video v : user.getVideoList())
+                {
+                    i++;
+                    System.out.println("Video " + i
+                            + "\nTítol: " + v.getTitle()
+                            + "\nURL: " + v.getVideoUrl()
+                            + "\ntags: " + v.getTags() + "\n");
+                }
+                menu2(sc, user);
+                break;
+            case 3:
+                //exit
+                System.exit(0);
+                break;
+        }
+    }
+
+    public static void createUser(Scanner sc, List<User> userList) throws Exception
+    {
+        String surname = askName(sc, "nom");
+        String name = askName(sc, "cognom");
+        String mail = askMail(sc, "mail", userList);
+        String password = askPassword(sc, "password");
+        User user = new User(surname, name, mail, password);
+        userList.add(user);
+
+        System.out.println("Usuari creat correctament amb les següents dades: "
+                + "\n nom: " + user.getName()
+                + "\n cognom: " + user.getSurname()
+                + "\n password: " + user.getPassword()
+                + "\n data creació: " + user.getRegistrationDate()
+                + "\n identificació: " + user.getIdUser() + "\n");
+        menu(sc, userList);
+    }
+
+    //ask and check the name
+    public static String askName(Scanner sc, String nameType) throws Exception
+    {
+        String answer = "";
+        boolean isCorrect = false;
+
+        do
+        {
+            System.out.println("Diga'm el teu  " + nameType + ":");
+            try
+            {
+                answer = sc.nextLine();
+                if (answer.isEmpty())
+                {
+                    throw new Exception();
+                }
+                for (Character a : answer.toCharArray())
+                {
+                    if (Character.isLetter(a))
+                    {
+                        isCorrect = true;
+                    } else
+                    {
+                        throw new IOException();
+                    }
+                }
+            } catch (IOException e)
+            {
+                isCorrect = false;
+                System.out.println("Un " + nameType + " només pot contenir lletres.");
+            } catch (Exception e)
+            {
+                isCorrect = false;
+                System.out.println("Aquest camp no pot estar buit.");
+            }
+        } while (!isCorrect);
+        return answer;
+    }
+
+    //ask and check the password
+    public static String askPassword(Scanner sc, String nameType) throws Exception
+    {
+        String answer = "";
+        boolean isCorrect = false;
+
+        do
+        {
+            System.out.println("Diga'm el teu  " + nameType + ":");
+            try
+            {
+                answer = sc.nextLine();
+
+                if (answer.isEmpty())
+                {
+                    throw new Exception();
+                }
+
+                if (answer.length() > 3 && answer.length() < 9)
+                {
+                    isCorrect = true;
+                } else
+                {
+                    throw new IOException();
+                }
+            } catch (IOException e)
+            {
+                isCorrect = false;
+                System.out.println("El " + nameType + " ha de tenir una longítud mínima de 4 i màxima de 8 caràcters.");
+
+            } catch (Exception e)
+            {
+                isCorrect = false;
+                System.out.println("Aquest camp no pot estar buit.");
+            }
+        } while (!isCorrect);
+        return answer;
+    }
+
+    //ask and check the user to login
+    public static void verifyUser(Scanner sc, List<User> userList) throws Exception
+    {
+
+        boolean found = false;
+        do
+        {
+            String mail = askMail(sc, "mail");
+            String password = askPassword(sc, "password");
+            User user = userExists(userList, mail, password);
+            if (user == null)
+            {
+                menu(sc, userList);
+            } else
+            {
+                found = true;
+                System.out.println("Hola " + user.getSurname());
+
+                menu2(sc, user);
+
+            }
+        } while (!found);
+    }
+
+    //ask and check the mail to login
+    public static String askMail(Scanner sc, String nameType) throws Exception
+    {
+        String answer = "";
+        boolean isCorrect = false;
+        do
+        {
+            System.out.println("Diga'm el teu  " + nameType + ":");
+            try
+            {
+                answer = sc.nextLine();
+
+                if (answer.isEmpty())
+                {
+                    throw new Exception();
+                } else
+                {
+                    isCorrect = true;
+                }
+            } catch (Exception e)
+            {
+                isCorrect = false;
+                System.out.println("Aquest camp no pot estar buit.");
+            }
+        } while (!isCorrect);
+        return answer;
+    }
+
+    //ask and check the mail to sign in
+    public static String askMail(Scanner sc, String nameType, List<User> userList) throws Exception
+    {
+        String answer = "";
+        boolean isCorrect = false;
+        Pattern pattern = Pattern
+                .compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+                        + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+
+        do
+        {
+            System.out.println("Diga'm el teu  " + nameType + ":");
+            try
+            {
+                answer = sc.nextLine();
+
+                if (answer.isEmpty())
+                {
+                    throw new Exception();
+                }
+
+                Matcher mather = pattern.matcher(answer);
+
+                if (mather.find() == true)
+                {
+                    isCorrect = true;
+
+                } else
+                {
+
+                    throw new IOException("El " + nameType + " ha de tenir un format vàlid.");
+                }
+
+                if (userExists(userList, answer))
+                {
+                    throw new IOException("Aquest " + nameType + " ja existeix.");
+                }
+            } catch (IOException e)
+            {
+                isCorrect = false;
+                System.out.println(e);
+
+            } catch (Exception e)
+            {
+                isCorrect = false;
+                System.out.println("Aquest camp no pot estar buit.");
+            }
+        } while (!isCorrect);
+        return answer;
+
+    }
+
+    //verify if the mail is already create
+    public static boolean userExists(List<User> userList, String mail)
+    {
+        boolean exist = false;
+        for (User u : userList)
+        {
+            exist = u.getMail().equals(mail);
+        }
+        return exist;
+    }
+
+    //verify if the user who log in exists
+    public static User userExists(List<User> userList, String mail, String password) throws IOException
+    {
+        User user = null;
+
+        try
+        {
+            if (userList.size() == 0)
+            {
+                throw new IOException();
+            }
+
+            for (User u : userList)
+            {
+                if (u.getMail().equals(mail)
+                        && u.getPassword().equals(password))
+                {
+                    user = u;
+                    return user;
+
+                } else
+                {
+                    throw new IOException();
+                }
+            }
+
+        } catch (IOException e)
+        {
+            System.out.println("Usuari o password incorrectes");
+        }
+        return user;
+    }
+
+    //ask and check a video
+    public static Video askVideo(Scanner sc)
+    {
+        System.out.println("Introdueix el títol del vídeo");
+        String title = sc.nextLine();
+        System.out.println("Introdueix la URL del vídeo");
+        String videoUrl = sc.nextLine();
+        System.out.println("Introdueix les etiquetes separades per comes");
+        String tags = sc.nextLine();
+        String[] tagsElements;
+        tagsElements = tags.split(",");
+
+        ArrayList<String> tagList = new ArrayList<>();
+        for (String tagsElement : tagsElements)
+        {
+            tagList.add(tagsElement);
         }
 
-        return wheelsList;
+        Video video = new Video(videoUrl, title, tagList);
+
+        return video;
+
     }
+
 }
